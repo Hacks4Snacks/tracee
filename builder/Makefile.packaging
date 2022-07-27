@@ -65,6 +65,14 @@ help:
 	@echo "  * 37 (devel)"
 	@echo "    $ make -f builder/Makefile.packaging fedora-bin-37"
 	@echo ""
+	@echo "CBL-MARINER:"
+	@echo ""
+	@echo "  * 1 (still maintained)"
+	@echo "    $ make -f builder/Makefile.packaging mariner-bin-1"
+	@echo ""
+	@echo "  * 2 (latest)"
+	@echo "    $ make -f builder/Makefile.packaging mariner-bin-2"
+	@echo ""
 
 #
 # requirements
@@ -243,7 +251,7 @@ ifneq ($(ARG),)
 endif
 
 #
-# CBL-MARINER: binary pkg (mariner-pkgs-bin-2, ...)
+# CBL-MARINER: binary pkg (mariner-pkgs-bin-1, mariner-pkgs-bin-2, ...)
 #
 
 .PHONY: mariner-bin-%
