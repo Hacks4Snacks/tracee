@@ -201,6 +201,57 @@ fedora-bin-%: \
 #
 	$(MAKE) .fedora-pkgs-make-$* ARG="packaging/fedora-pkgs.sh bin $*"
 
+#### CBL-MARINER
+
+#
+# CBL-MARINER: base container for building packages
+#
+
+MARINER_PKGS_CONTNAME = mariner-pkgs-make
+MARINER_PKGS_DOCKERFILE = $(abspath $(shell $(CMD_FIND) -name Dockerfile.mariner-packaging))
+
+.PHONY: .mariner-pkgs-prepare-%
+.mariner-pkgs-prepare-%: \
+	| .check_tree \
+	.check_$(CMD_DOCKER)
+#
+	$(CMD_DOCKER) \
+		build \
+		-f $(MARINER_PKGS_DOCKERFILE) \
+		-t $(MARINER_PKGS_CONTNAME):$* \
+		--build-arg uid=$(UID) \
+		--build-arg gid=$(GID) \
+		--build-arg version=$* \
+		. && \
+	$(CMD_TOUCH) $@
+
+#
+# CBL-MARINER: invoke the package builder container (mariner-pkgs-make:version)
+#
+
+.PHONY: .mariner-pkgs-make-%
+.mariner-pkgs-make-%: \
+	.mariner-pkgs-prepare-% \
+	| .check_tree \
+	.check_$(CMD_DOCKER)
+#
+ifneq ($(ARG),)
+	$(CMD_DOCKER) \
+		$(DOCKER_RUN_ARGS) \
+		-it $(MARINER_PKGS_CONTNAME):$* \
+		$(ARG)
+endif
+
+#
+# CBL-MARINER: binary pkg (mariner-pkgs-bin-2, ...)
+#
+
+.PHONY: mariner-bin-%
+mariner-bin-%: \
+	| .check_tree
+#
+	$(MAKE) .mariner-pkgs-make-$* ARG="packaging/mariner-pkgs.sh bin $*"
+
 #
 # TODO: centos, stream, opensuse...
 #
