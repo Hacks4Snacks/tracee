@@ -10,7 +10,7 @@ ARG version
 ARG uid=1000
 ARG gid=1000
 
-FROM fedora:$version
+FROM mariner:$version
 ARG version
 ARG uid
 ARG gid
